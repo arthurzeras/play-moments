@@ -9,7 +9,7 @@ AWS.config.update({
 
 const S3 = new AWS.S3();
 
-module.exports.list = async (event) => {
+module.exports.list = async () => {
   const params = {
     Bucket: process.env.BUCKET_NAME,
   };
@@ -19,7 +19,7 @@ module.exports.list = async (event) => {
 
     // fs.writeFileSync('./buckets.json', JSON.stringify({ bucket }, null, 2));
 
-    const items = (bucket.Contents || []).map((item) => ({
+    const items = (bucket.Contents || []).map(item => ({
       key: item.Key,
       size: item.Size,
     }));
