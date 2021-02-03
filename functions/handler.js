@@ -27,6 +27,9 @@ module.exports.list = async () => {
     return {
       statusCode: 200,
       body: JSON.stringify({ items }, null, 2),
+      headers: {
+        'Access-Control-Allow-Origin': process.env.ORIGINS,
+      },
     };
   } catch (error) {
     return {

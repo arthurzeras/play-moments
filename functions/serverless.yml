@@ -20,6 +20,13 @@ provider:
 
 useDotenv: true
 
+plugins:
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    httpPort: 4000
+
 functions:
   list:
     handler: handler.list
