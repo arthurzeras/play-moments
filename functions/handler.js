@@ -59,6 +59,10 @@ async function getMockData() {
 }
 
 module.exports.list = async () => {
+  const headers = {
+    'Access-Control-Allow-Origin': process.env.ORIGINS,
+  };
+
   try {
     const bucket =
       process.env.NODE_ENV === 'development'
@@ -68,16 +72,20 @@ module.exports.list = async () => {
     const items = groupByGames(bucket.Contents || []);
 
     return {
+      headers,
       statusCode: 200,
       body: JSON.stringify({ items }, null, 2),
-      headers: {
-        'Access-Control-Allow-Origin': process.env.ORIGINS,
-      },
     };
   } catch (error) {
+    const obj = {
+      detail: error.message,
+      message: 'Internal Server Error',
+    };
+
     return {
+      headers,
       statusCode: 500,
-      body: JSON.stringify({ error: error.message }, null, 2),
+      body: JSON.stringify(obj, null, 2),
     };
   }
 };
