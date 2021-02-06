@@ -1,12 +1,13 @@
 <template>
   <div class="home">
-    <img alt="Play moments logo" src="../assets/img/logo.png" />
-    play moments
+    Home
   </div>
 </template>
 
-<script>
-export default {
-  name: 'Home',
-};
+<script setup>
+import store from '@/store';
+import { computed } from 'vue';
+
+// eslint-disable-next-line no-unused-vars
+const games = computed(() => store.state.games);
 </script>
