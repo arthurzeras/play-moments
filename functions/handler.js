@@ -1,7 +1,7 @@
 'use strict';
 
+const fs = require('fs');
 const AWS = require('aws-sdk');
-// const fs = require('fs');
 
 AWS.config.update({
   region: 'us-east-1',
@@ -9,20 +9,63 @@ AWS.config.update({
 
 const S3 = new AWS.S3();
 
-module.exports.list = async () => {
+/**
+ * Group objects by directory hierarchy, this case is:
+ * /PS4/SHARE/<Screenshots | Video Clips>/<Name of the game>/<File name with extension>
+ * @param {*} items Object path on bucket
+ */
+function groupByGames(items) {
+  return items.reduce((all, current) => {
+    const key = current.Key;
+    const [, , type, game] = key.split('/');
+
+    const index = all.findIndex(i => i.name === game);
+
+    if (index !== -1) {
+      if (type in all[index]) {
+        all[index][type].push(key);
+      } else {
+        all[index][type] = [key];
+      }
+
+      return all;
+    }
+
+    all.push({
+      name: game,
+      [type]: [key],
+    });
+
+    return all;
+  }, []);
+}
+
+function getBucketData() {
   const params = {
     Bucket: process.env.BUCKET_NAME,
   };
 
+  return S3.listObjects(params).promise();
+}
+
+async function getMockData() {
+  if (!fs.existsSync('./bucket.json')) {
+    const bucket = await getBucketData();
+
+    fs.writeFileSync('./bucket.json', JSON.stringify({ bucket }, null, 2));
+  }
+
+  return JSON.parse(fs.readFileSync('./bucket.json', 'utf-8')).bucket;
+}
+
+module.exports.list = async () => {
   try {
-    const bucket = await S3.listObjects(params).promise();
+    const bucket =
+      process.env.NODE_ENV === 'development'
+        ? await getMockData()
+        : await getBucketData();
 
-    // fs.writeFileSync('./buckets.json', JSON.stringify({ bucket }, null, 2));
-
-    const items = (bucket.Contents || []).map(item => ({
-      key: item.Key,
-      size: item.Size,
-    }));
+    const items = groupByGames(bucket.Contents || []);
 
     return {
       statusCode: 200,
@@ -34,7 +77,7 @@ module.exports.list = async () => {
   } catch (error) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error }, null, 2),
+      body: JSON.stringify({ error: error.message }, null, 2),
     };
   }
 };
