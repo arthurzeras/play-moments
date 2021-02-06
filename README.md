@@ -15,7 +15,7 @@ List content from a public bucket on S3 and display videos and images
 
 On `functions` directory, create `.env` file based on `.env.sample`
 
-> Note: Always declare NODE_ENV as development, otherwise, every time you call funcion locally, actual lamba function will be executed
+> Note: Always declare NODE_ENV as development, otherwise, every time you call funcion locally, a new request to S3 will be made.
 
 ```bash
 $ cd functions
