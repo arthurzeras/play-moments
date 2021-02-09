@@ -1,5 +1,5 @@
 <template>
-  <div class="card-object">
+  <router-link :to="routerParams" class="card-object">
     <div class="card-object__image">
       <img :src="image" :alt="name" />
     </div>
@@ -13,7 +13,7 @@
         {{ totals.videos }} Video Clips
       </div>
     </div>
-  </div>
+  </router-link>
 </template>
 
 <script>
@@ -53,10 +53,18 @@ export default {
       };
     });
 
+    const routerParams = {
+      name: 'Object',
+      params: {
+        slug: props.obj.slug,
+      },
+    };
+
     return {
       name,
       image,
       totals,
+      routerParams,
     };
   },
 };
@@ -69,6 +77,7 @@ export default {
   cursor: pointer;
   transition: 0.4s;
   border-radius: 15px;
+  text-decoration: none;
   flex-direction: column;
   background-color: rgba(255, 255, 255, 0.1);
 
