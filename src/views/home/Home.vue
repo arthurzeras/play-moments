@@ -1,5 +1,9 @@
 <template>
   <div class="home">
+    <div class="home__filter">
+      <filter-list @searchChange="handleChange" />
+    </div>
+
     <div class="home__list">
       <div class="home__list--item" v-for="obj in objects" :key="obj.name">
         <card-object :obj="obj" />
@@ -11,16 +15,31 @@
 <script setup>
 /* eslint-disable no-unused-vars */
 import store from '@/store';
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import CardObject from './components/CardObject';
+import FilterList from './components/FilterList';
 
-const objects = computed(() => store.state.objects);
+const filter = ref('');
+const objects = computed(() =>
+  store.state.objects.filter(obj =>
+    new RegExp(filter.value, 'gi').test(obj.name),
+  ),
+);
+
+const handleChange = value => {
+  filter.value = value;
+};
 </script>
 
 <style lang="scss" scoped>
 .home {
   padding: 10px;
+  min-height: 100vh;
   background-color: var(--main);
+
+  &__filter {
+    padding: 30px 0;
+  }
 
   &__list {
     display: flex;
