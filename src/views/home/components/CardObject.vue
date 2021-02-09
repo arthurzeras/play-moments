@@ -35,7 +35,7 @@ export default {
         return `${BUCKET_URL}/${images[randomIndex]}`;
       }
 
-      return '';
+      return require('@/assets/img/placeholder-image.png');
     });
 
     const name = computed(() => {
