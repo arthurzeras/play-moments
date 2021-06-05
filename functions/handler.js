@@ -12,7 +12,7 @@ const S3 = new AWS.S3();
 /**
  * Group objects by directory hierarchy, this case is:
  * /PS4/SHARE/<Screenshots | Video Clips>/<Name of the game>/<File name with extension>
- * @param {*} items Object path on bucket
+ * @param {Record<string, string>[]} items Object path on bucket
  */
 function groupByGames(items) {
   return items.reduce((all, current) => {
@@ -40,12 +40,31 @@ function groupByGames(items) {
   }, []);
 }
 
-function getBucketData() {
+/**
+ * Get bucket data
+ * @param {{content?: Record<string,string>[], nextToken?: string}} config
+ * @returns {Promise<Record<string, string>[]>}
+ */
+async function getBucketData(config = {}) {
+  config.content = config.content || [];
+  const { content, nextToken } = config;
   const params = {
     Bucket: process.env.BUCKET_NAME,
   };
 
-  return S3.listObjects(params).promise();
+  if (nextToken) {
+    params.ContinuationToken = nextToken;
+  }
+
+  const output = await S3.listObjectsV2(params).promise();
+
+  content.push(...output.Contents);
+
+  if (output.NextContinuationToken) {
+    return getBucketData({ content, nextToken: output.NextContinuationToken });
+  }
+
+  return content;
 }
 
 async function getMockData() {
@@ -69,7 +88,7 @@ module.exports.list = async () => {
         ? await getMockData()
         : await getBucketData();
 
-    const items = groupByGames(bucket.Contents || []);
+    const items = groupByGames(bucket || []);
 
     return {
       headers,
