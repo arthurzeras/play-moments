@@ -3,6 +3,7 @@
     fill="none"
     class="app-icon"
     stroke="currentColor"
+    :style="{ width: `${width}rem` }"
     :viewBox="`0 0 ${icon.size} ${icon.size}`"
   >
     <path
@@ -22,6 +23,11 @@ export default {
     name: {
       type: String,
       required: true,
+    },
+
+    width: {
+      default: 1,
+      type: [Number, String],
     },
   },
 
