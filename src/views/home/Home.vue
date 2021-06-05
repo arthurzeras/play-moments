@@ -35,7 +35,7 @@ const handleChange = value => {
 .home {
   padding: 10px;
   min-height: 100vh;
-  background-color: var(--main);
+  // background-color: var(--main);
 
   &__filter {
     padding: 30px 0;

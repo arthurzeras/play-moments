@@ -79,11 +79,11 @@ export default {
   border-radius: 15px;
   text-decoration: none;
   flex-direction: column;
-  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid var(--main);
+  box-shadow: 0 0px 5px rgba(0, 0, 0, 0.2);
 
   &:hover {
-    background-color: var(--main);
-    box-shadow: 0 2px 20px rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0px 20px rgba(0, 0, 0, 0.6);
   }
 
   &__image {
@@ -99,8 +99,8 @@ export default {
   }
 
   &__content {
-    color: #fff;
     padding: 10px;
+    color: var(--main);
 
     &--title {
       padding: 0;
@@ -115,9 +115,9 @@ export default {
     }
 
     &--totals {
-      color: #ddd;
       font-size: 0.9rem;
       margin-bottom: 4px;
+      color: var(--secondary);
     }
   }
 }

@@ -1,10 +1,6 @@
 <template>
   <div class="filter-list">
-    <img
-      alt="search"
-      class="filter-list__icon"
-      src="@/assets/img/icons/search.svg"
-    />
+    <app-icon class="filter-list__icon" name="search" />
 
     <input
       type="text"
@@ -27,19 +23,25 @@
     width: 20px;
     position: absolute;
     left: calc(20% + 20px);
+    color: var(--secondary);
   }
 
   &__input {
     width: 60%;
-    color: #fff;
+    outline: none;
+    transition: 0.4s;
     font-size: 1.2rem;
+    color: var(--main);
     border-radius: 10px;
-    border: 2px solid #fff;
     padding: 10px 10px 10px 60px;
-    background-color: var(--secondary);
+    border: 2px solid var(--main);
 
     &::placeholder {
-      color: #ddd;
+      color: var(--secondary);
+    }
+
+    &:focus {
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     }
   }
 }
